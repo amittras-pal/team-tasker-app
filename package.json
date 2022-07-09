@@ -1,0 +1,46 @@
+{
+  "name": "team-tasker-app",
+  "version": "1.0.0",
+  "description": "A full Stack MERN app to track tasks for a team of people in a project.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "develop": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amittras-pal/team-tasker-app.git"
+  },
+  "keywords": [
+    "MERN Stack",
+    "SocketIO",
+    "Full Stack"
+  ],
+  "author": "Amittras Pal",
+  "license": "ISC",
+  "nodemonConfig": {
+    "ignore": [
+      "client/*"
+    ]
+  },
+  "bugs": {
+    "url": "https://github.com/amittras-pal/team-tasker-app/issues"
+  },
+  "homepage": "https://github.com/amittras-pal/team-tasker-app#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-async-handler": "^1.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.4.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}

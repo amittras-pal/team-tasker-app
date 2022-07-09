@@ -1,0 +1,2 @@
+We're using mantine UI as our component library.
+This folder will contain any style override hooks created for custom components.

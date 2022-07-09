@@ -1,0 +1,32 @@
+{
+  "material-icon-theme.activeIconPack": "react_redux",
+  "workbench.iconTheme": "material-icon-theme",
+  "editor.cursorBlinking": "smooth",
+  "editor.cursorSmoothCaretAnimation": true,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": true,
+  "editor.minimap.renderCharacters": false,
+  "editor.minimap.showSlider": "mouseover",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "emmet.excludeLanguages": ["markdown"],
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+  },
+  "editor.formatOnSave": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "editor.linkedEditing": true,
+  "prettier.enableDebugLogs": true,
+  "prettier.jsxBracketSameLine": true,
+  "prettier.useEditorConfig": false,
+  "eslint.alwaysShowStatus": true,
+  "eslint.debug": true,
+  "eslint.lintTask.enable": true,
+
+  "typescript.updateImportsOnFileMove.enabled": "always"
+}

@@ -1,0 +1,5 @@
+This folder will contain all database schema models
+
+Follow file name scheme:
+ModelName.model.js
+

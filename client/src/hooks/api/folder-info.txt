@@ -1,0 +1,2 @@
+We're using react-query as a data fetching and server state management library
+This folder will contain any wrapper hooks created for the application

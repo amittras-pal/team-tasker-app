@@ -1,0 +1,3 @@
+Will contain routing modules for various application routes. 
+
+This is different from the components folder since the components declared in this folder will always be a Route component.
