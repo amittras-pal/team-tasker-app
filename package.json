@@ -33,6 +33,7 @@
   "homepage": "https://github.com/amittras-pal/team-tasker-app#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "colors": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
