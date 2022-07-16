@@ -2,9 +2,8 @@ export const themeOverrides = {
   emotionOptions: { key: "ws" },
   theme: {
     colorScheme: "dark",
-    primaryColor: "orange",
+    primaryColor: "blue",
     transitionTimingFunction: "ease-in-out",
-    loader: "dots",
   },
   defaultProps: {
     Modal: {
@@ -23,6 +22,16 @@ export const themeOverrides = {
       type: "scroll",
       scrollbarSize: 6,
       scrollHideDelay: 1500,
+    },
+    TextInput: {
+      mb: "sm",
+    },
+    PasswordInput: {
+      mb: "sm",
+    },
+    Stepper: {
+      breakpoint: "md",
+      iconSize: 36,
     },
   },
 };

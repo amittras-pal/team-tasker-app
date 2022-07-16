@@ -5,14 +5,18 @@ import { MantineProvider } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
 import { themeOverrides } from "./theme/mantineOverrides";
+import { BrowserRouter } from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <React.StrictMode>
     <MantineProvider withGlobalStyles withNormalizeCSS {...themeOverrides}>
       <NotificationsProvider>
         <ModalsProvider>
-          <App />
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
         </ModalsProvider>
       </NotificationsProvider>
     </MantineProvider>

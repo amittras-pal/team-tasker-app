@@ -1,1 +1,0 @@
-This folder will contain any reusable components that are created for the application.
