@@ -1,4 +1,4 @@
-const http = {
+const httpStatus = {
   CREATED: 201,
   DELETED: 204,
   MOVED_PERMANENTLY: 301,
@@ -9,4 +9,4 @@ const http = {
   INTERNAL_SERVER_ERROR: 500,
 };
 
-module.exports = http;
+module.exports = { httpStatus };

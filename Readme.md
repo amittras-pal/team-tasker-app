@@ -50,3 +50,4 @@ All development will be done on feature branches checked out from `dev` branch, 
 
 - `Mantine UI Docs` - Mantine UI is used as the component library for the application, [view the official documentation here](https://mantine.dev/)
 - `Youtube Tutorial MERN Stack` - [MERN Stack Crash Course by Traversy Media](https://youtube.com/playlist?list=PLillGF-RfqbbQeVSccR9PGKHzPJSWqcsm)
+- `Configure Nodemailer with Gmail OAuth` - [youtube](https://www.youtube.com/watch?v=-rcRf7yswfM&t=59s)
