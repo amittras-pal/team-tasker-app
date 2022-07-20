@@ -1,4 +1,5 @@
 const http = {
+  OK: 200,
   CREATED: 201,
   DELETED: 204,
   MOVED_PERMANENTLY: 301,

@@ -13,6 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/api/user", require("./routes/User.routes"));
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
