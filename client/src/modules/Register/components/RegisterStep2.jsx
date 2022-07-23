@@ -1,31 +1,73 @@
-import { Alert, Button, Group, TextInput } from "@mantine/core";
+import { Box, Button, Group, PasswordInput } from "@mantine/core";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
-import { ArrowRight, InfoCircle } from "tabler-icons-react";
-import { CHECK_MAIL_FOR_CODE_ALERT } from "../../../constants/global.constants";
+import * as yup from "yup";
+import { ArrowRight } from "tabler-icons-react";
+import { useRegistrationContext } from "../context/RegistrationFormContext";
 
-const RegisterStep2 = ({ isSmallScreen }) => {
+const RegisterStep2 = ({ isSmallScreen, setActiveStep }) => {
+  const { setFormData, formData } = useRegistrationContext();
+  const moveToNextStep = (currentStepData) => {
+    setActiveStep(2);
+    setFormData((prev) => ({ ...prev, ...currentStepData }));
+  };
+
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isValid, dirtyFields, touchedFields },
+  } = useForm({
+    mode: "onChange",
+    shouldFocusError: true,
+    defaultValues: {
+      password: formData.password,
+      confirmPassword: formData.confirmPassword,
+    },
+    resolver: yupResolver(
+      yup.object().shape({
+        password: yup.string().required("Password is required."),
+        confirmPassword: yup
+          .string()
+          .oneOf([yup.ref("password"), null], "Passwords do not match.")
+          .required("Please enter password again."),
+      })
+    ),
+  });
+
   return (
-    <>
-      <Alert
-        color="blue"
-        icon={<InfoCircle size={16} />}
-        title="Account Verification">
-        {CHECK_MAIL_FOR_CODE_ALERT}
-      </Alert>
-      <Group position="center" align="center" grow={isSmallScreen}>
-        <TextInput
-          type="number"
-          placeholder="Your 6-digit code"
-          autoFocus
-          my="md"
-        />
-      </Group>
-      <Group position="center">
-        <Button rightIcon={<ArrowRight size={18} />} fullWidth={isSmallScreen}>
-          Verify
+    <Box component="form" noValidate onSubmit={handleSubmit(moveToNextStep)}>
+      <PasswordInput
+        label="Password"
+        required
+        autoFocus
+        {...register("password")}
+        error={
+          dirtyFields.password &&
+          touchedFields.password &&
+          errors.password?.message
+        }
+      />
+      <PasswordInput
+        label="Confirm Password"
+        required
+        {...register("confirmPassword")}
+        error={
+          dirtyFields.confirmPassword &&
+          touchedFields.confirmPassword &&
+          errors.confirmPassword?.message
+        }
+      />
+      <Group position={isSmallScreen ? "center" : "right"}>
+        <Button
+          disabled={!isValid}
+          rightIcon={<ArrowRight size={18} />}
+          fullWidth={isSmallScreen}
+          type="submit">
+          Proceed
         </Button>
       </Group>
-    </>
+    </Box>
   );
 };
 
