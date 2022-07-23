@@ -13,14 +13,12 @@ export const authLayoutStyle = createStyles((theme) => ({
   container: {
     padding: 0,
     width: "100%",
-    position: "relative",
     boxShadow: theme.shadows.md,
     borderRadius: theme.radius.md,
-    backdropFilter: "blur(6px)",
     backgroundColor:
       theme.colorScheme === "dark"
-        ? theme.colors.gray[8]
-        : theme.colors.gray[2],
+        ? theme.colors.gray[7]
+        : theme.colors.gray[3],
   },
   loadingOverlay: {
     borderRadius: theme.radius.md,
