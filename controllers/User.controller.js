@@ -15,7 +15,6 @@ const signUp = asyncHandler(async (req, res) => {
     res.status(http.BAD_REQUEST);
     throw new Error(description);
   }
-  // Check if email id is already registered
   const searchUser = await User.findOne({ email });
   if (searchUser) {
     res.status(http.CONFLICT);
@@ -23,7 +22,6 @@ const signUp = asyncHandler(async (req, res) => {
       `Email Id: ${email} is already associated with some account`
     );
   }
-  // register user
   const hashSalt = await bcrypt.genSalt();
   const hashedPassword = await bcrypt.hash(password, hashSalt);
   const user = await User.create({
@@ -32,6 +30,7 @@ const signUp = asyncHandler(async (req, res) => {
     mobileNo,
     password: hashedPassword,
   });
+
   // Generate a token for user
   const generatedToken = await Token.create({
     userId: user.id,
@@ -61,7 +60,7 @@ const signUp = asyncHandler(async (req, res) => {
  * @Get /api/user/verify-token/:userId/:token
  * This end point is used for verifying user email and activating user account
  */
-const verifyToken = asyncHandler(async (req, res) => {
+const verifyRegistrationToken = asyncHandler(async (req, res) => {
   const { userId, token } = req.params;
   const exitingToken = await Token.findOne({ userId, token });
   if (exitingToken) {
@@ -85,5 +84,5 @@ const verifyToken = asyncHandler(async (req, res) => {
 
 module.exports = {
   signUp,
-  verifyToken,
+  verifyRegistrationToken,
 };
