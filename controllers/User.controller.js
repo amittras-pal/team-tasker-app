@@ -1,5 +1,5 @@
 const User = require("../models/User.model");
-const http = require("../constants/http.constants");
+const { httpStatus: http } = require("../constants/http.constants");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const Token = require("../models/Token.model");
@@ -69,7 +69,7 @@ const verifyRegistrationToken = asyncHandler(async (req, res) => {
       { $set: { isActive: true, isEmailVerified: true } }
     );
     if (user) {
-      res.status(http.OK).json({ message: "Verification is successfull" });
+      res.json({ message: "Verification is successfull" });
     } else {
       res.status(http.INTERNAL_SERVER_ERROR).json("Some error occured");
       throw new Error("Unabel to verify user");

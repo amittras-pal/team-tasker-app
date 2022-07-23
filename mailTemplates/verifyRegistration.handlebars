@@ -1,0 +1,48 @@
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Your New Account</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *, *::after, *::before { margin: 0; padding: 0; } html, body {
+      font-family: 'Poppins', sans-serif; color: rgb(50, 50, 50); }
+      .flex-column-center { display: flex; flex-direction: column; align-items:
+      center; justify-content: center; } header.header { gap: 0.75rem; padding:
+      2rem 0rem; background-color: cornsilk; border-radius: 1rem; margin: 1rem;
+      box-shadow: 0px 5px 10px -2px rgb(50, 50, 50, 0.1); } .fw-bold {
+      font-weight: 700; } .text-center { text-align: center; } .text-danger {
+      color: crimson; } main { max-width: 768px; width: 100%; margin: 0 auto; }
+      p.code { margin: 2rem 0rem; font-size: 3rem; background-color: lightgray;
+      border: 1px solid darkgray; padding: 0.5rem; }
+    </style>
+  </head>
+
+  <body>
+    <header class="header flex-column-center">
+      <h1>Welcome to Work Scape {{name}}</h1>
+      <p class="fw-bold">Thank you for creating an account with us.</p>
+    </header>
+    <main class="flex-column-center">
+      <p class="text-center">You are one step away from using your new
+        <span class="fw-bold">WorkScape Account</span>. Please verify your
+        account by using the following verification code.</p>
+      <p class="code">
+        {{code}}
+      </p>
+      <p class="text-center text-danger">
+        <span class="fw-bold">NOTE: </span>
+        The code is only valid for
+        <span class="fw-bold">30 minutes</span>.
+      </p>
+    </main>
+  </body>
+
+</html>
