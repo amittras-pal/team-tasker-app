@@ -10,11 +10,13 @@ const validateCreatePayload = (payload) => {
   if (password.length < 8)
     return {
       valid: false,
+      field: "password",
       description: "Password must contain atleast 8 characters",
     };
   if (!mobileNo.match(/^\d{10}$/))
     return {
       valid: false,
+      field: "mobileNo",
       description: "Please provide a valid mobile number",
     };
 

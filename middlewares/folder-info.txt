@@ -1,5 +1,0 @@
-This folder will contain all the custom express middlewares files
-
-Follow file name scheme:
-middleware_name.middleware.js
-

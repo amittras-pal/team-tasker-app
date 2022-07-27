@@ -1,21 +1,20 @@
 const mongoose = require("mongoose");
-const reference = require("../constants/reference.constants");
 
 const tokenSchema = new mongoose.Schema(
   {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
+    emailId: {
+      type: String,
       required: true,
     },
     token: {
-      type: Number,
+      type: String,
       required: true,
     },
     createdAt: {
       type: Date,
       required: true,
       default: Date.now,
-      expires: reference.VERIFICATION_TOKEN_EXPIRATION,
+      expires: 1800,
     },
   },
   { timestamps: true }

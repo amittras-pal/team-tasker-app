@@ -21,9 +21,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    colorOption: {
+      type: String,
+      enum: ["dark", "light"],
+      default: "dark",
+    },
     isEmailVerified: { type: Boolean, default: false },
-    isActive: { type: Boolean, default: false },
-    isLocked: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
     lastLoggedIn: { type: Date, default: null },
   },
   { timestamps: true }
