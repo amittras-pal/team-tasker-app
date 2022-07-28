@@ -1,5 +1,0 @@
-This folder will contain all the express routing modules which will call the corressponding controllers for a particular endpoint route.
-
-Follow file name scheme:
-route_name.routes.js
-

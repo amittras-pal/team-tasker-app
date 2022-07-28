@@ -1,5 +1,0 @@
-This folder will contain all the controller files containing all the heavy business logic of data access from the db
-
-Follow file name scheme:
-controller_name.controller.js
-
