@@ -19,8 +19,15 @@ export const authLayoutStyle = createStyles((theme) => ({
       theme.colorScheme === "dark"
         ? theme.colors.gray[7]
         : theme.colors.gray[3],
-  },
-  loadingOverlay: {
-    borderRadius: theme.radius.md,
+    [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+      margin: "0",
+      borderRadius: "0px",
+      height: "100%",
+      backgroundColor:
+        theme.colorScheme === "dark"
+          ? `${theme.colors.gray[7]}BB`
+          : `${theme.colors.gray[3]}BB`,
+      backdropFilter: "blur(5px)",
+    },
   },
 }));
