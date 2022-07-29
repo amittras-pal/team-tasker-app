@@ -26,7 +26,7 @@ export const authLayoutStyle = createStyles((theme) => ({
       backgroundColor:
         theme.colorScheme === "dark"
           ? `${theme.colors.gray[7]}BB`
-          : `${theme.colors.gray[3]}BB`,
+          : `${theme.colors.gray[2]}CC`,
       backdropFilter: "blur(5px)",
     },
   },

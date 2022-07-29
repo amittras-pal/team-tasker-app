@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "tabler-icons-react";
+import { ArrowRight, Key, Mail } from "tabler-icons-react";
 import AuthLayout from "../../components/layout/AuthLayout/AuthLayout";
 import { APP_TITLE } from "../../constants/global.constants";
 
@@ -57,6 +57,7 @@ const Login = () => {
         </Text>
         <TextInput
           label="Email Address"
+          icon={<Mail size={18} />}
           required
           autoFocus
           {...register("email")}
@@ -66,6 +67,7 @@ const Login = () => {
         />
         <PasswordInput
           label="Password"
+          icon={<Key size={18} />}
           required
           {...register("password")}
           error={
