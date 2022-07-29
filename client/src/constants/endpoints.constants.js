@@ -1,6 +1,7 @@
 export const USER_ENDPOINTS = {
-  verifyEmailExists: "/api/verify-email-exists",
-  registerUser: "/api/register/user",
-  loginUser: "/api/login-user",
-  verifySecretCode: "/api/verify-secret-code",
+  verifyToken: "/api/user/verify-email",
+  searchByEmail: "/api/user/search-email",
+  searchByName: "/api/user/search",
+  register: "/api/user/register",
+  login: "/api/user/login",
 };
