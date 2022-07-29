@@ -122,8 +122,8 @@ const verifyEmail = asyncHandler(async (req, res) => {
       },
     });
   } else {
-    return res.status(http.NOT_FOUND).json({
-      message: httpStatusName.NOT_FOUND,
+    return res.status(http.UNAUTHORIZED).json({
+      message: httpStatusName.UNAUTHORIZED,
       error: {
         field: "",
         description: "Verifaction code has expired",
