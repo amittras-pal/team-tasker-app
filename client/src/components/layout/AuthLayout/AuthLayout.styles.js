@@ -13,16 +13,21 @@ export const authLayoutStyle = createStyles((theme) => ({
   container: {
     padding: 0,
     width: "100%",
-    position: "relative",
     boxShadow: theme.shadows.md,
     borderRadius: theme.radius.md,
-    backdropFilter: "blur(6px)",
     backgroundColor:
       theme.colorScheme === "dark"
-        ? theme.colors.gray[8]
-        : theme.colors.gray[2],
-  },
-  loadingOverlay: {
-    borderRadius: theme.radius.md,
+        ? theme.colors.gray[7]
+        : theme.colors.gray[3],
+    [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+      margin: "0",
+      borderRadius: "0px",
+      height: "100%",
+      backgroundColor:
+        theme.colorScheme === "dark"
+          ? `${theme.colors.gray[7]}BB`
+          : `${theme.colors.gray[2]}CC`,
+      backdropFilter: "blur(5px)",
+    },
   },
 }));

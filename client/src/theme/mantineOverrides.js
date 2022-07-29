@@ -28,6 +28,7 @@ export const themeOverrides = {
     },
     PasswordInput: {
       mb: "sm",
+      toggleTabIndex: 0,
     },
     Stepper: {
       breakpoint: "md",
