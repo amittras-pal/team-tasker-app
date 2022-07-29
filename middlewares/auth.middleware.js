@@ -1,8 +1,6 @@
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const { httpStatus, httpStatusName } = require("../constants/http.constants");
-const dotenv = require("dotenv");
-dotenv.config();
 
 /**
  * This method runs before any route which is protected and it validates the jwt token
@@ -15,7 +13,8 @@ module.exports = asyncHandler(async (req, res, next) => {
     try {
       const jwtToken = authHeader.split(" ")[1];
       const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET);
-      const { email, name } = decoded;
+      const { id, email, name } = decoded;
+      req.id = id;
       req.email = email;
       req.name = name;
       next();
@@ -32,7 +31,7 @@ module.exports = asyncHandler(async (req, res, next) => {
     return res.status(httpStatus.UNAUTHORIZED).json({
       message: httpStatusName.UNAUTHORIZED,
       error: {
-        description: "Please provide the valid bearer token",
+        description: "Please provide a valid bearer token in request header",
       },
     });
   }

@@ -9,10 +9,7 @@ const Token = require("../models/Token.model");
 const { validateCreatePayload } = require("../utils/requestValidators");
 const { sendEmail } = require("../utils/mailer");
 const crypto = require("crypto");
-const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
-
-dotenv.config();
 
 /**
  * This method will be used to generate and send token in email to user
@@ -39,7 +36,10 @@ const sendEmailVerificationToken = async (name, emailId, template, subject) => {
 };
 
 /**
- * This method is used to register user in the application
+ *
+ * @POST /api/user/register
+ * Authentication: Unprotected and can be invoked without login
+ * This method will create a user in the system
  */
 const signUp = asyncHandler(async (req, res) => {
   const { name, email, mobileNo, password } = req.body;
@@ -64,14 +64,11 @@ const signUp = asyncHandler(async (req, res) => {
     });
   }
 
-  const hashSalt = await bcrypt.genSalt();
-  const hashedPassword = await bcrypt.hash(password, hashSalt);
-
   const user = await User.create({
     name,
     email,
     mobileNo,
-    password: hashedPassword,
+    password,
   });
 
   if (user) {
@@ -84,11 +81,9 @@ const signUp = asyncHandler(async (req, res) => {
     return res.status(http.CREATED).json({
       message: httpStatusName.CREATED,
       response: {
-        id: user.id,
+        _id: user.id,
         name: user.name,
         email: user.email,
-        mobileNo: user.mobileNo,
-        colorOption: user.colorOption,
         description: "User created successfully",
       },
     });
@@ -98,14 +93,15 @@ const signUp = asyncHandler(async (req, res) => {
 });
 
 /**
- * @Get /api/user/verify-token/:userId/:token
+ * @Get /api/user/verify-token
+ * Authentication: Unprotected and can be invoked without login
  * This end point is used for verifying user email and activating user account
  */
 const verifyEmail = asyncHandler(async (req, res) => {
   const { emailId, token } = req.query;
   if (!emailId || !token)
     return res.status(http.BAD_REQUEST).json({
-      message: httpStatusName.OK,
+      message: httpStatusName.BAD_REQUEST,
       error: {
         field: "",
         description: "Please pass the mandatory parameteres",
@@ -126,20 +122,21 @@ const verifyEmail = asyncHandler(async (req, res) => {
       },
     });
   } else {
-    return res.status(http.NOT_FOUND).json({
-      message: httpStatusName.NOT_FOUND,
+    return res.status(http.UNAUTHORIZED).json({
+      message: httpStatusName.UNAUTHORIZED,
       error: {
         field: "",
-        description:
-          "Verifaction code has expired please try generating a new one",
+        description: "Verifaction code has expired",
       },
     });
   }
 });
 
 /**
- * @Get This method is used to search if email id is already taken or not
- * It takes emailId as query parameter and search if any user with given email id exists in system
+ * @GET /api/user/search-email?emailId="some_email"
+ * Query parameters: @param {String} emailId It is a required query parameter
+ * Authentication: Protected and user needs to provide bearer token with key authorization in request header
+ * This method is used to search if email id is already taken or not
  */
 
 const searchUserByEmail = asyncHandler(async (req, res) => {
@@ -162,8 +159,8 @@ const searchUserByEmail = asyncHandler(async (req, res) => {
       response: {
         exists: !!doc,
         description: doc
-          ? "Email is associated with some account"
-          : "Email is not associated with any account",
+          ? "Email id is not available"
+          : "Email id is available",
       },
     });
   });
@@ -171,6 +168,7 @@ const searchUserByEmail = asyncHandler(async (req, res) => {
 
 /**
  * @GET /api/user/search?name='some_string'
+ * Authentication: Protected and user needs to provide bearer token with key authorization in request header
  * This method searches the users whose name contains the search string passed as name
  * Result is sorted by createdDate desc
  */
@@ -181,52 +179,44 @@ const searchUserByName = asyncHandler(async (req, res) => {
       message: httpStatusName.BAD_REQUEST,
       error: {
         field: "name",
-        description: "Please provide search string to search users",
+        description: "Please provide name to search users",
       },
     });
 
-  const users = await User.find({
-    name: { $regex: name.trim(), $options: "i" },
-    isEmailVerified: true,
-  }).sort({ createdAt: "desc" });
-  if (users.length > 0)
-    return res.json({
-      message: httpStatusName.OK,
-      response: {
-        users: users.map((user) => ({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          createdAt: user.createdAt,
-        })),
-      },
-    });
-  else {
-    return res.status(http.NOT_FOUND).json({
-      message: httpStatusName.NOT_FOUND,
-      error: {
-        field: "name",
-        description: "No users found with given name",
-      },
-    });
-  }
+  const users = await User.find(
+    {
+      name: { $regex: name.trim(), $options: "i" },
+      isEmailVerified: true,
+    },
+    { _id: 1, name: 1, email: 1 }
+  ).sort({ name: "asc" });
+  return res.json({
+    message: httpStatusName.OK,
+    response: {
+      users,
+    },
+  });
 });
 
 /**
  * This method is used in login process to generate the JWT token
+ * @param {String} id Object id of the user document
  * @param {String} email Email id of the user to put in token
  * @param {String} name name of user to put in token
  * @returns JWT Token
  */
-const generateJWTToken = (email, name) => {
-  return jwt.sign({ email, name }, process.env.JWT_SECRET, {
-    expiresIn: "86400s",
+const generateJWTToken = (id, email, name) => {
+  return jwt.sign({ id, email, name }, process.env.JWT_SECRET, {
+    expiresIn: "24h",
   });
 };
 
 /**
- * @POST /api/user/login This method is used for user login it validates email id
- * and password and once it is valid issues an jwt token which can be used in subsequnent requests
+ * @POST /api/user/login
+ * Authentication: Unprotected and can be invoked by any user
+ * This method is used for user login it validates email id
+ * and password and once it is valid issues an jwt token
+ * which can be used in subsequnent requests
  */
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -237,29 +227,38 @@ const login = asyncHandler(async (req, res) => {
     });
 
   // Load user from DB
-  const userInDB = await User.findOne({ email, isActive: true });
+  const userInDB = await User.findOne({ email });
   if (!userInDB)
-    return res.status(http.NOT_FOUND).json({
-      message: httpStatusName.BAD_REQUEST,
+    return res.status(http.UNAUTHORIZED).json({
+      message: httpStatusName.UNAUTHORIZED,
       response: {
         field: "email",
-        description: "Either email id is not correct or user is not active",
+        description: "Email id is incorrect",
+      },
+    });
+  if (!userInDB.isActive)
+    return res.status(http.UNAUTHORIZED).json({
+      message: httpStatusName.UNAUTHORIZED,
+      response: {
+        field: "email",
+        description: "User account is inactive",
       },
     });
 
   const result = await bcrypt.compare(password, userInDB.password);
   if (!result)
-    return res.status(http.BAD_REQUEST).json({
-      message: httpStatusName.BAD_REQUEST,
+    return res.status(http.UNAUTHORIZED).json({
+      message: httpStatusName.UNAUTHORIZED,
       error: {
         field: "password",
-        description: "Please provide the correct password",
+        description: "Password is incorrect",
       },
     });
-  const token = generateJWTToken(userInDB.email, userInDB.name);
-  return res.header("token", token).json({
+  const token = generateJWTToken(userInDB.id, userInDB.email, userInDB.name);
+  return res.json({
     message: httpStatusName.OK,
     response: {
+      token,
       description: "Login successful",
     },
   });
