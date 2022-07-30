@@ -7,22 +7,28 @@ import {
   TextInput,
   useMantineTheme,
 } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
+import { useDocumentTitle, useMediaQuery } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Link } from "react-router-dom";
-import { ArrowRight, Key, Mail } from "tabler-icons-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowRight, Check, Key, Mail } from "tabler-icons-react";
 import AuthLayout from "../../components/layout/AuthLayout/AuthLayout";
 import { APP_TITLE } from "../../constants/global.constants";
+import { useLoginUser } from "../../hooks/services/login.services";
+import { showNotification } from "@mantine/notifications";
 
 const Login = () => {
   const { breakpoints } = useMantineTheme();
+  useDocumentTitle(`${APP_TITLE} | Login`);
   const isSmallScreen = useMediaQuery(`(max-width: ${breakpoints.md}px)`);
+
+  const navigate = useNavigate();
 
   const {
     handleSubmit,
     register,
+    setError,
     formState: { errors, isValid, dirtyFields, touchedFields },
   } = useForm({
     mode: "onChange",
@@ -42,6 +48,27 @@ const Login = () => {
     ),
   });
 
+  const { mutate: loginUser, isLoading: loggingIn } = useLoginUser({
+    onSuccess: (response) => {
+      showNotification({
+        title: response?.data?.response?.description,
+        color: "green",
+        icon: <Check />,
+      });
+      localStorage.setItem("token", response?.data?.response?.token);
+      navigate("/");
+    },
+    onError: (error) => {
+      setError(
+        error?.response?.data?.error.field,
+        {
+          message: error?.response?.data?.error.description,
+        },
+        { shouldFocus: true }
+      );
+    },
+  });
+
   return (
     <AuthLayout>
       <Box
@@ -49,8 +76,8 @@ const Login = () => {
         py="lg"
         component="form"
         noValidate
-        onSubmit={handleSubmit((e) => {
-          console.log(e);
+        onSubmit={handleSubmit((values) => {
+          loginUser(values);
         })}>
         <Text size="xl" mb="md">
           Login to your {APP_TITLE} account
@@ -82,6 +109,7 @@ const Login = () => {
           mb={8}>
           <Button
             type="submit"
+            loading={loggingIn}
             disabled={!isValid}
             rightIcon={<ArrowRight size={18} />}
             fullWidth={isSmallScreen}>
