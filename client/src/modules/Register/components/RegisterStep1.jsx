@@ -3,20 +3,20 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { ArrowRight, Mail, User } from "tabler-icons-react";
+import { ArrowRight, Mail, User, X } from "tabler-icons-react";
 import { useRegistrationContext } from "../context/RegistrationFormContext";
 import * as yup from "yup";
+import { useSearchByEmail } from "../../../hooks/services/restration.services";
+import { showNotification } from "@mantine/notifications";
 
 const RegisterStep1 = ({ isSmallScreen, setActiveStep }) => {
   const { setFormData, formData } = useRegistrationContext();
-  const moveToNextStep = (currentStepData) => {
-    setActiveStep(1);
-    setFormData((prev) => ({ ...prev, ...currentStepData }));
-  };
 
   const {
     handleSubmit,
     register,
+    getValues,
+    setError,
     formState: { errors, isValid, dirtyFields, touchedFields },
   } = useForm({
     mode: "onChange",
@@ -36,8 +36,41 @@ const RegisterStep1 = ({ isSmallScreen, setActiveStep }) => {
     ),
   });
 
+  const moveToNextStep = () => {
+    const currentStepData = getValues();
+    setActiveStep(1);
+    setFormData((prev) => ({ ...prev, ...currentStepData }));
+  };
+
+  const { mutate: checkUserExists, isLoading: checkingUserExixts } =
+    useSearchByEmail({
+      onSuccess: (response) => {
+        const { data = {} } = response || {};
+        if (!data?.response?.exists) moveToNextStep();
+        else
+          setError(
+            "email",
+            { message: data?.response?.description },
+            { shouldFocus: true }
+          );
+      },
+      onError: (_) => {
+        showNotification({
+          title: "Something went wrong.",
+          message: "We couldn't check if that email exixts, please try again.",
+          icon: <X size={20} />,
+          color: "red",
+        });
+      },
+    });
+
   return (
-    <Box component="form" noValidate onSubmit={handleSubmit(moveToNextStep)}>
+    <Box
+      component="form"
+      noValidate
+      onSubmit={handleSubmit((values) => {
+        checkUserExists(values.email);
+      })}>
       <TextInput
         icon={<User size={18} />}
         label="Your Full Name"
@@ -64,6 +97,7 @@ const RegisterStep1 = ({ isSmallScreen, setActiveStep }) => {
           rightIcon={<ArrowRight size={18} />}
           fullWidth={isSmallScreen}
           type="submit"
+          loading={checkingUserExixts}
           disabled={!isValid}>
           Proceed
         </Button>
