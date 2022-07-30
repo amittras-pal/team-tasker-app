@@ -4,4 +4,5 @@ export const USER_ENDPOINTS = Object.freeze({
   searchByName: "/api/user/search",
   register: "/api/user/register",
   login: "/api/user/login",
+  userDetails: "/api/user/details",
 });

@@ -4,18 +4,24 @@ import {
   Box,
   Group,
   Header as MantineHeader,
+  Loader,
   Text,
   Tooltip,
 } from "@mantine/core";
 import { useHomeStyles } from "../Home.styles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { APP_TITLE } from "../../../constants/global.constants";
-import { UserCheck } from "tabler-icons-react";
+import { InfoCircle, UserCheck } from "tabler-icons-react";
+import { useAuth } from "../context/AuthContext";
 
 const Header = () => {
   const {
     classes: { header },
   } = useHomeStyles();
+
+  const { isLoading, isError } = useAuth();
+  const navigate = useNavigate();
+
   return (
     <MantineHeader height={75} className={header}>
       <Box>
@@ -28,9 +34,14 @@ const Header = () => {
           placement="end"
           openDelay={350}
           position="bottom"
-          label="My Account">
-          <ActionIcon component={Link} to="my-account" size="lg">
-            <UserCheck size={20} />
+          label={isError ? "Failed to load accoutn details!" : "My Account"}>
+          <ActionIcon
+            size="lg"
+            color={isError ? "red" : "gray"}
+            onClick={() => navigate("my-account")}>
+            {isLoading && <Loader size="xs" />}
+            {isError && <InfoCircle size={20} />}
+            {!isLoading && !isError && <UserCheck size={20} />}
           </ActionIcon>
         </Tooltip>
       </Group>
