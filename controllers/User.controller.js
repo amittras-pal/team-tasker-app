@@ -1,8 +1,4 @@
 const User = require("../models/User.model");
-const {
-  httpStatus: http,
-  httpStatusName,
-} = require("../constants/http.constants");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const Token = require("../models/Token.model");
@@ -10,6 +6,7 @@ const { validateCreatePayload } = require("../utils/requestValidators");
 const { sendEmail } = require("../utils/mailer");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const { StatusCodes, ReasonPhrases } = require("http-status-codes");
 
 /**
  * This method will be used to generate and send token in email to user
@@ -45,8 +42,8 @@ const signUp = asyncHandler(async (req, res) => {
   const { name, email, mobileNo, password } = req.body;
   const { valid, description, field } = validateCreatePayload(req.body);
   if (!valid)
-    return res.status(http.BAD_REQUEST).json({
-      message: httpStatusName.BAD_REQUEST,
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: ReasonPhrases.BAD_REQUEST,
       error: {
         field,
         description,
@@ -55,8 +52,8 @@ const signUp = asyncHandler(async (req, res) => {
 
   const userDoc = await User.findOne({ email });
   if (userDoc) {
-    return res.status(http.CONFLICT).json({
-      message: httpStatusName.CONFLICT,
+    return res.status(StatusCodes.CONFLICT).json({
+      message: ReasonPhrases.CONFLICT,
       error: {
         field: "email",
         description: "Email is assocaited with some account",
@@ -78,8 +75,8 @@ const signUp = asyncHandler(async (req, res) => {
       "verifyRegistration",
       "New Account Verification"
     );
-    return res.status(http.CREATED).json({
-      message: httpStatusName.CREATED,
+    return res.status(StatusCodes.CREATED).json({
+      message: ReasonPhrases.CREATED,
       response: {
         _id: user.id,
         name: user.name,
@@ -100,8 +97,8 @@ const signUp = asyncHandler(async (req, res) => {
 const verifyEmail = asyncHandler(async (req, res) => {
   const { emailId, token } = req.query;
   if (!emailId || !token)
-    return res.status(http.BAD_REQUEST).json({
-      message: httpStatusName.BAD_REQUEST,
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: ReasonPhrases.BAD_REQUEST,
       error: {
         field: "",
         description: "Please pass the mandatory parameteres",
@@ -116,14 +113,14 @@ const verifyEmail = asyncHandler(async (req, res) => {
     );
     existingToken.delete();
     return res.json({
-      message: httpStatusName.OK,
+      message: ReasonPhrases.OK,
       response: {
         description: "Email verified successfully",
       },
     });
   } else {
-    return res.status(http.UNAUTHORIZED).json({
-      message: httpStatusName.UNAUTHORIZED,
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      message: ReasonPhrases.UNAUTHORIZED,
       error: {
         field: "",
         description: "Verifaction code has expired",
@@ -142,8 +139,8 @@ const verifyEmail = asyncHandler(async (req, res) => {
 const searchUserByEmail = asyncHandler(async (req, res) => {
   const { emailId } = req.query || {};
   if (!emailId) {
-    return res.status(http.BAD_REQUEST).json({
-      message: httpStatusName.BAD_REQUEST,
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: ReasonPhrases.BAD_REQUEST,
       error: {
         field: "email",
         description: "Please provide email id",
@@ -155,7 +152,7 @@ const searchUserByEmail = asyncHandler(async (req, res) => {
       throw err;
     }
     res.json({
-      message: httpStatusName.OK,
+      message: ReasonPhrases.OK,
       response: {
         exists: !!doc,
         description: doc
@@ -175,8 +172,8 @@ const searchUserByEmail = asyncHandler(async (req, res) => {
 const searchUserByName = asyncHandler(async (req, res) => {
   const { name } = req.query;
   if (!name)
-    return res.status(http.BAD_REQUEST).json({
-      message: httpStatusName.BAD_REQUEST,
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: ReasonPhrases.BAD_REQUEST,
       error: {
         field: "name",
         description: "Please provide name to search users",
@@ -191,7 +188,7 @@ const searchUserByName = asyncHandler(async (req, res) => {
     { _id: 1, name: 1, email: 1 }
   ).sort({ name: "asc" });
   return res.json({
-    message: httpStatusName.OK,
+    message: ReasonPhrases.OK,
     response: {
       users,
     },
@@ -221,24 +218,24 @@ const generateJWTToken = (id, email, name) => {
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password)
-    return res.status(http.BAD_REQUEST).json({
-      message: httpStatusName.BAD_REQUEST,
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: ReasonPhrases.BAD_REQUEST,
       error: { description: "Please provide email id and password" },
     });
 
   // Load user from DB
   const userInDB = await User.findOne({ email });
   if (!userInDB)
-    return res.status(http.UNAUTHORIZED).json({
-      message: httpStatusName.UNAUTHORIZED,
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      message: ReasonPhrases.UNAUTHORIZED,
       response: {
         field: "email",
         description: "Email id is incorrect",
       },
     });
   if (!userInDB.isActive)
-    return res.status(http.UNAUTHORIZED).json({
-      message: httpStatusName.UNAUTHORIZED,
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      message: ReasonPhrases.UNAUTHORIZED,
       response: {
         field: "email",
         description: "User account is inactive",
@@ -247,8 +244,8 @@ const login = asyncHandler(async (req, res) => {
 
   const result = await bcrypt.compare(password, userInDB.password);
   if (!result)
-    return res.status(http.UNAUTHORIZED).json({
-      message: httpStatusName.UNAUTHORIZED,
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      message: ReasonPhrases.UNAUTHORIZED,
       error: {
         field: "password",
         description: "Password is incorrect",
@@ -256,7 +253,7 @@ const login = asyncHandler(async (req, res) => {
     });
   const token = generateJWTToken(userInDB.id, userInDB.email, userInDB.name);
   return res.json({
-    message: httpStatusName.OK,
+    message: ReasonPhrases.OK,
     response: {
       token,
       description: "Login successful",

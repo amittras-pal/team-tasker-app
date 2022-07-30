@@ -2,8 +2,7 @@ require("dotenv").config();
 const mailer = require("nodemailer");
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
-
-const { httpStatus } = require("../constants/http.constants");
+const { StatusCodes } = require("http-status-codes");
 const hbs = require("nodemailer-express-handlebars");
 const path = require("path");
 
@@ -68,7 +67,7 @@ async function sendEmail(emailOptions) {
     throw {
       error,
       message: "Failed to send email",
-      code: httpStatus.INTERNAL_SERVER_ERROR,
+      code: StatusCodes.INTERNAL_SERVER_ERROR,
     };
   }
 }
