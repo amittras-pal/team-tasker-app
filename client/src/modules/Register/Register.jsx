@@ -1,5 +1,5 @@
 import { Box, Stepper, Text, useMantineTheme } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
+import { useDocumentTitle, useMediaQuery } from "@mantine/hooks";
 import React, { useState } from "react";
 import AuthLayout from "../../components/layout/AuthLayout/AuthLayout";
 import { APP_TITLE } from "../../constants/global.constants";
@@ -11,6 +11,7 @@ import { RegistrationFormProvider } from "./context/RegistrationFormContext";
 
 const Register = () => {
   const { breakpoints } = useMantineTheme();
+  useDocumentTitle(`${APP_TITLE} | Create New Account`);
   const isSmallScreen = useMediaQuery(`(max-width: ${breakpoints.md}px)`);
 
   const [activeStep, setActiveStep] = useState(0);

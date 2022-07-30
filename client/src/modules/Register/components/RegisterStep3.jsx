@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { CHECK_MAIL_FOR_REGISTRATION_CODE } from "../../../constants/global.constants";
 import { useRegistrationContext } from "../context/RegistrationFormContext";
+import { Link } from "react-router-dom";
 
 const RegisterStep3 = ({ isSmallScreen }) => {
   const { formData } = useRegistrationContext();
@@ -45,7 +46,7 @@ const RegisterStep3 = ({ isSmallScreen }) => {
         title="Account Created">
         <Text size="xs">{CHECK_MAIL_FOR_REGISTRATION_CODE}</Text>
       </Alert>
-      <Group position="center" align="center" grow={isSmallScreen}>
+      <Group position="center" align="center" grow>
         <TextInput
           my="md"
           placeholder="Your 8-digit code"
@@ -58,13 +59,21 @@ const RegisterStep3 = ({ isSmallScreen }) => {
           }
         />
       </Group>
-      <Group position="center">
+      <Group position={isSmallScreen ? "center" : "apart"}>
         <Button
           rightIcon={<ArrowRight size={18} />}
           fullWidth={isSmallScreen}
           disabled={!isValid}
           type="submit">
           Verify & Create Account
+        </Button>
+        <Button
+          component={Link}
+          to="/login"
+          fullWidth={isSmallScreen}
+          variant="subtle"
+          type="button">
+          Skip verification for now
         </Button>
       </Group>
     </Box>
