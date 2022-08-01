@@ -226,11 +226,11 @@ const login = asyncHandler(async (req, res) => {
   // Load user from DB
   const userInDB = await User.findOne({ email });
   if (!userInDB)
-    return res.status(StatusCodes.UNAUTHORIZED).json({
-      message: ReasonPhrases.UNAUTHORIZED,
+    return res.status(StatusCodes.NOT_FOUND).json({
+      message: ReasonPhrases.NOT_FOUND,
       response: {
         field: "email",
-        description: "Email id is incorrect",
+        description: "Email id is not found in the system, please register",
       },
     });
   if (!userInDB.isActive)
@@ -261,10 +261,36 @@ const login = asyncHandler(async (req, res) => {
   });
 });
 
+/**
+ * @GET /api/user/details
+ * Authentication: Requires user to be logged in the system
+ * This method is used for fetching the user details
+ */
+const userDetails = asyncHandler(async (req, res) => {
+  const { id } = req;
+  const userDetails = await User.findOne(
+    { __id: id },
+    { password: 0, createdAt: 0, updatedAt: 0 }
+  );
+  if (!userDetails)
+    return res.status(StatusCodes.NOT_FOUND).json({
+      message: ReasonPhrases.NOT_FOUND,
+      error: {
+        field: "",
+        description: "User not found in the system",
+      },
+    });
+  return res.json({
+    message: ReasonPhrases.OK,
+    response: userDetails,
+  });
+});
+
 module.exports = {
   signUp,
   verifyEmail,
   searchUserByEmail,
   searchUserByName,
   login,
+  userDetails,
 };
