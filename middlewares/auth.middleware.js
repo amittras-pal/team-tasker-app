@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
-const { httpStatus, httpStatusName } = require("../constants/http.constants");
-
+const { StatusCodes, ReasonPhrases } = require("http-status-codes");
 /**
  * This method runs before any route which is protected and it validates the jwt token
  * which needs to be passed with authorization key in request header
@@ -19,8 +18,8 @@ module.exports = asyncHandler(async (req, res, next) => {
       req.name = name;
       next();
     } catch (error) {
-      res.status(httpStatus.UNAUTHORIZED).json({
-        message: httpStatusName.UNAUTHORIZED,
+      res.status(StatusCodes.UNAUTHORIZED).json({
+        message: ReasonPhrases.UNAUTHORIZED,
         error: {
           field: "token",
           description: error.message,
@@ -28,8 +27,8 @@ module.exports = asyncHandler(async (req, res, next) => {
       });
     }
   } else {
-    return res.status(httpStatus.UNAUTHORIZED).json({
-      message: httpStatusName.UNAUTHORIZED,
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      message: ReasonPhrases.UNAUTHORIZED,
       error: {
         description: "Please provide a valid bearer token in request header",
       },
