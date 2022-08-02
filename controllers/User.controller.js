@@ -268,10 +268,11 @@ const login = asyncHandler(async (req, res) => {
  */
 const userDetails = asyncHandler(async (req, res) => {
   const { id } = req;
-  const userDetails = await User.findOne(
-    { __id: id },
-    { password: 0, createdAt: 0, updatedAt: 0 }
-  );
+  const userDetails = await User.findById(id, {
+    password: 0,
+    createdAt: 0,
+    updatedAt: 0,
+  });
   if (!userDetails)
     return res.status(StatusCodes.NOT_FOUND).json({
       message: ReasonPhrases.NOT_FOUND,
